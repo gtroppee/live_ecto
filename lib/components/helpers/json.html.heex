@@ -1,0 +1,7 @@
+<span>
+  <%= if is_map(@value) || is_list(@value) do %>
+    <code><pre><%= @value |> Jason.encode! |> Jason.Formatter.pretty_print %></pre></code>
+  <% else %>
+    <%= @value %>
+  <% end %>
+</span>

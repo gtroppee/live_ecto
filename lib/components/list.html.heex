@@ -1,0 +1,41 @@
+<div>
+  <h3><%= @schema %></h3>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <%= for {attribute, _} <- @attributes do %>
+        <th style="word-wrap:break-word;max-width:200px"><%= attribute %></th>
+        <% end %>
+        <th scope="col">Actions</th>
+        <th scope="col">Links</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for resource <- @resources do %>
+      <tr>
+        <%= for {attribute, _} <- @attributes do %>
+        <td style="word-wrap:break-word;max-width:200px">
+          <% value = Map.get(resource, attribute) %>
+          <%= if (is_map(value) || is_list(value)) do %>
+          <code><.live_component module={EctoLiveWeb.Helpers.Json} value={value} id={"#{resource.id}_#{attribute}"} /></code>
+          <% else %>
+          <pre><%= value %></pre>
+          <% end %>
+        </td>
+        <% end %>
+        <td>
+          <%= for {name, _} <- @actions do %>
+          <a href="#" class="btn btn-sm btn-primary" phx-click="action" phx-value-name={name} phx-value-id={resource.id} phx-target={@myself}><%= name |> Inflex.camelize %></a><br>
+          <% end %>
+        </td>
+        <td>
+          <%= for {_, function} <- @links do %>
+          <%= live_redirect("Edit", to: function.(resource)) %><br>
+          <% end %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

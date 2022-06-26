@@ -1,0 +1,42 @@
+<div class="p-3 border rounded">
+
+<%= for {key, value} <- @value do %>
+  <div class="row">
+    <.live_component
+      module={EctoLiveWeb.Components.Fields.Smart}
+      schema={@schema}
+      value={value}
+      type={type_for(value)}
+      name={"#{@name}[#{key}]"}
+      id={"#{@name}[#{key}]"} />
+    
+    <%= if @display_actions do %>
+    <button type="button"
+      class="btn btn-sm btn-danger mt-2"
+      phx-click="remove"
+      phx-value-name={key}
+      phx-target={@myself}>Remove</button>
+    <% end %>
+  </div>
+<% end %>
+
+<%= if @display_actions do %>
+
+  <hr class="mt-4">
+
+  <div class="row align-items-end mt-3">
+    <div class="col">
+      <label class="form-label" for="attribute">New attribute name</label>
+      <input phx-change="set-name" name={"name-#{:rand.uniform(10000)}"} phx-target={@myself} class="form-control"/>
+    </div>
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add-as-string" phx-target={@myself}>Add as string</button>
+      <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add-as-list" phx-target={@myself}>Add as list</button>
+      <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add-as-object" phx-target={@myself}>Add as object</button>
+    </div>
+  </div>
+
+<% end %>
+
+</div>

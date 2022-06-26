@@ -1,0 +1,32 @@
+<div class="p-3 border rounded">
+  <%= for {value, index} <- Enum.with_index(@value) do %>
+    <div class="row p-3">
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Smart}
+        value={value}
+        name={"#{@name}#{index}"}
+        id={"#{@name}#{index}"} />
+
+      <button type="button"
+          class="btn btn-sm btn-danger mt-2"
+          phx-click="remove"
+          phx-value-index={index}
+          phx-target={@myself}>Remove</button>
+    </div>
+  <% end %>
+
+  <hr class="mt-4">
+
+  <div class="row align-items-end mt-3">
+    <div class="col">
+      <label class="form-label" for="attribute">New attribute name</label>
+      <input phx-change="set-name" name={"name-#{:rand.uniform(10000)}"} phx-target={@myself} class="form-control"/>
+    </div>
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add-as-string" phx-target={@myself}>Add as string</button>
+      <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add-as-list" phx-target={@myself}>Add as list</button>
+      <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add-as-object" phx-target={@myself}>Add as object</button>
+    </div>
+  </div>
+</div>

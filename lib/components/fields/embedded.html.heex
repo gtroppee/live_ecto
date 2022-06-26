@@ -1,0 +1,11 @@
+<div class="p-3 border rounded">
+  <%= for {name, type} <- @fields do %>
+  <.live_component
+    module={EctoLiveWeb.Components.Fields.Smart}
+    schema={@schema}
+    type={type}
+    value={Map.get(@value, name)}
+    name={"#{@name}[#{name}]"}
+    id={"#{@id}[#{name}]"} />
+  <% end %>
+</div>

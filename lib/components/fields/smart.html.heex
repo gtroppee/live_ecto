@@ -1,0 +1,75 @@
+<div class="mb-3">
+  <label class="form-label" for={@name}><b><%= @label_name %></b></label>
+
+  <%= case @type do %>
+    <% :id -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Id}
+        schema={@schema}
+        value={@value}
+        id={@name}
+        name={@name} />
+    <% :string -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.String}
+        schema={@schema}
+        value={@value}
+        id={@name}
+        name={@name} />
+    <% :integer -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Integer}
+        schema={@schema}
+        value={@value}
+        id={@name}
+        name={@name} />
+    <% :map -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Json}
+        schema={@schema}
+        id={@name}
+        name={@name}
+        value={@value || %{}}
+        display_actions={true} />
+    <% {:parameterized, _, _} -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Embedded}
+        schema={@schema}
+        type={@type}
+        value={@value || %{}}
+        id={@name}
+        name={@name} />
+    <% _ -> %>
+      <div class="alert alert-danger" role="alert">
+        Unsupported type <%= inspect @type %> for field <%= @name %>
+      </div>
+  <% end %>
+
+  <%= if false do %>
+  <%= cond do %>
+<% is_struct(@value) -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Json}
+        id={@name}
+        name={@name}
+        value={@value |> Map.from_struct |> Map.delete(:__meta__)}
+        display_actions={false} />
+    <% is_map(@value) -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Json}
+        id={@name}
+        name={@name}
+        schema={@schema}
+        value={@value}
+        display_actions={true} />
+    <% is_list(@value) -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Array}
+        schema={@schema}
+        value={@value}
+        id={@name}
+        name={@name} />
+    <% true -> %>
+      <% end %>
+  <% end %>
+</div>

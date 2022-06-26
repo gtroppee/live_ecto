@@ -1,0 +1,23 @@
+<div>
+  <h3><%= @schema %></h3>
+
+  <.form let={_} for={@changeset} phx-change="update-changeset" phx-submit="save" phx-target={@myself}>
+    <div class="row">
+      <div class="col p-4">
+        <%= for {name, type} <- @attributes do %>
+        <.live_component
+            module={EctoLiveWeb.Components.Fields.Smart}
+            schema={@schema}
+            type={type}
+            value={Ecto.Changeset.get_field(@changeset, name)}
+            name={"#{@schema.__schema__(:source) |> Inflex.singularize}[#{name}]"}
+            id={name} />
+        <% end %>
+      </div>
+    </div>
+
+    <%= for {name, _} <- @actions do %>
+    <a href="#" phx-click="action" phx-value-name={name} phx-target={@myself} class="btn btn-xs btn-primary"><%= name |> Inflex.camelize %></a><br>
+    <% end %>
+  </.form>
+</div>
