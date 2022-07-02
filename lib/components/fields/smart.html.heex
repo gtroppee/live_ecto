@@ -1,5 +1,5 @@
 <div class="mb-3">
-  <label class="form-label" for={@name}><b><%= @label_name %></b></label>
+  <label class="form-label" for={@name}><b><%= @name %></b></label>
 
   <%= case @type do %>
     <% :id -> %>
@@ -7,37 +7,44 @@
         module={EctoLiveWeb.Components.Fields.Id}
         schema={@schema}
         value={@value}
-        id={@name}
+        id={"#{@name}-#{:rand.uniform(10000)}"}
         name={@name} />
     <% :string -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.String}
         schema={@schema}
         value={@value}
-        id={@name}
+        id={"#{@name}-#{:rand.uniform(10000)}"}
         name={@name} />
     <% :integer -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.Integer}
         schema={@schema}
         value={@value}
-        id={@name}
+        id={"#{@name}-#{:rand.uniform(10000)}"}
         name={@name} />
     <% :map -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.Json}
         schema={@schema}
-        id={@name}
+        id={"#{@name}-#{:rand.uniform(10000)}"}
         name={@name}
         value={@value || %{}}
         display_actions={true} />
-    <% {:parameterized, _, _} -> %>
+    <% {:array, _} -> %>
       <.live_component
-        module={EctoLiveWeb.Components.Fields.Embedded}
+        module={EctoLiveWeb.Components.Fields.Array}
+        schema={@schema}
+        id={"#{@name}-#{:rand.uniform(10000)}"}
+        name={@name}
+        value={@value || []} />
+    <% {:parameterized, Ecto.Embedded, %Ecto.Embedded{cardinality: :one}} -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Embedded.One}
         schema={@schema}
         type={@type}
         value={@value || %{}}
-        id={@name}
+        id={"#{@name}-#{:rand.uniform(10000)}"}
         name={@name} />
     <% _ -> %>
       <div class="alert alert-danger" role="alert">
@@ -50,14 +57,14 @@
 <% is_struct(@value) -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.Json}
-        id={@name}
+        id={"#{@name}-#{:rand.uniform(10000)}"}
         name={@name}
         value={@value |> Map.from_struct |> Map.delete(:__meta__)}
         display_actions={false} />
     <% is_map(@value) -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.Json}
-        id={@name}
+        id={"#{@name}-#{:rand.uniform(10000)}"}
         name={@name}
         schema={@schema}
         value={@value}
@@ -67,7 +74,7 @@
         module={EctoLiveWeb.Components.Fields.Array}
         schema={@schema}
         value={@value}
-        id={@name}
+        id={"#{@name}-#{:rand.uniform(10000)}"}
         name={@name} />
     <% true -> %>
       <% end %>

@@ -26,7 +26,7 @@
         <% end %>
         <td>
           <%= for {name, _} <- @actions do %>
-          <a href="#" class="btn btn-sm btn-primary" phx-click="action" phx-value-name={name} phx-value-id={resource.id} phx-target={@myself}><%= name |> Inflex.camelize %></a><br>
+          <a href="#" class="btn btn-sm btn-primary" phx-click="action" phx-value-name={name} phx-value-id={resource.id} phx-target={@myself} data-confirm={"This resource is going to be #{name}-ed. Are you sure?"}><%= name |> Inflex.camelize %></a><br>
           <% end %>
         </td>
         <td>

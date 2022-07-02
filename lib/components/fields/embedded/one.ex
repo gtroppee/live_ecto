@@ -1,4 +1,4 @@
-defmodule EctoLiveWeb.Components.Fields.Embedded do
+defmodule EctoLiveWeb.Components.Fields.Embedded.One do
   use Phoenix.LiveComponent
   alias EctoLive.Helpers
 

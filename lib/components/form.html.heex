@@ -1,7 +1,7 @@
 <div>
   <h3><%= @schema %></h3>
 
-  <.form let={_} for={@changeset} phx-change="update-changeset" phx-submit="save" phx-target={@myself}>
+  <.form let={_} for={@changeset} phx-submit="action" phx-target={@myself}>
     <div class="row">
       <div class="col p-4">
         <%= for {name, type} <- @attributes do %>
@@ -16,8 +16,6 @@
       </div>
     </div>
 
-    <%= for {name, _} <- @actions do %>
-    <a href="#" phx-click="action" phx-value-name={name} phx-target={@myself} class="btn btn-xs btn-primary"><%= name |> Inflex.camelize %></a><br>
-    <% end %>
+    <button type="submit" class="btn btn-primary">Save</button>
   </.form>
 </div>

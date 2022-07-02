@@ -38,15 +38,15 @@ defmodule EctoLiveWeb.Components.Fields.Json do
     {:noreply, socket}
   end
 
-  def type_for(value) when is_binary(value) do
-    :string
-  end
-
   def type_for(value) when is_map(value) do
     :map
   end
 
   def type_for(value) when is_list(value) do
     {:array, :string}
+  end
+
+  def type_for(value) do
+    :string
   end
 end

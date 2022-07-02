@@ -10,20 +10,23 @@ defmodule EctoLiveWeb.Base do
           schema: schema,
           attributes: Helpers.attributes(schema),
           actions: Map.get(assigns, :actions, []),
+          action: Map.get(assigns, :action, []),
           links: Map.get(assigns, :links, [])
         )
 
         {:ok, socket}
       end
 
-      def handle_event("update-changeset", params, %{assigns: %{schema: schema, changeset: changeset}} = socket) do
-        params = params |> Map.get(schema.__schema__(:source) |> Inflex.singularize)
-        changeset = schema.changeset(changeset.data, params)
-
-        {:noreply, assign(socket, changeset: changeset)}
-      end
+#       def handle_event("update-changeset", params, %{assigns: %{schema: schema, changeset: changeset}} = socket) do
+#         params = params |> Map.get(schema.__schema__(:source) |> Inflex.singularize)
+#         changeset = schema.changeset(changeset.data, params)
+# IO.inspect params
+#         {:noreply, assign(socket, changeset: changeset)}
+#       end
 
       defp run_action({name, function}, changeset, socket) do
+        IO.inspect changeset.data
+        IO.inspect changeset.changes
         case function.(changeset) do
           {:ok, data} ->
             send(self(), {:ok, {:action, name, data}})

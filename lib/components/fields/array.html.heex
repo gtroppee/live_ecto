@@ -3,8 +3,10 @@
     <div class="row p-3">
       <.live_component
         module={EctoLiveWeb.Components.Fields.Smart}
+        schema={@schema}
         value={value}
-        name={"#{@name}#{index}"}
+        type={type_for(value)}
+        name={"#{@name}[]"}
         id={"#{@name}#{index}"} />
 
       <button type="button"

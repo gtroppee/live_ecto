@@ -22,7 +22,7 @@ defmodule LiveEcto.MixProject do
   defp deps do
     [
       {:ecto, "~> 3.8.4"},
-      {:phoenix_live_view, "~> 0.17.4"},
+      {:phoenix_live_view, "~> 0.17.10"},
       {:inflex, "~> 2.0.0"},
       {:jason, "~> 1.2"}
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}

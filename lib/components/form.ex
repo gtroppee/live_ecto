@@ -14,8 +14,9 @@ defmodule EctoLiveWeb.Form do
   end
 
   @impl true
-  def handle_event("action", %{"name" => name}, %{assigns: %{actions: actions, changeset: changeset}} = socket) do
-    action = Enum.find(actions, fn {n, _} -> Atom.to_string(n) == name end)
+  def handle_event("action", params, %{assigns: %{action: action, resource: resource, schema: schema}} = socket) do
+    params = params |> Map.get(schema.__schema__(:source) |> Inflex.singularize)
+    changeset = schema.changeset(resource, params)
     socket = run_action(action, changeset, socket)
 
     {:noreply, socket}

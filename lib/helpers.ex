@@ -37,18 +37,6 @@ defmodule EctoLive.Helpers do
     end)
   end
 
-  def validate(queryable, params) do
-    queryable.__struct__
-    |> queryable.changeset(params)
-    |> Map.put(:action, :insert_or_update)
-  end
-
-  def save(resource, params, opts \\ []) do
-    resource
-    |> resource.__struct__.changeset(params)
-    |> repo().insert_or_update(opts)
-  end
-
   def parent_associations(module) do
     module
     |> associations
