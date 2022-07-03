@@ -1,6 +1,17 @@
 <div class="p-3 border rounded">
-  <%= for {value, index} <- Enum.with_index(@value) do %>
-    <div class="row p-3">
+  <%= if @value == [] do %>
+  <div class="alert alert-info text-center" role="alert">
+    No data
+  </div>
+  <% else %>
+    <%= for {value, index} <- Enum.with_index(@value) do %>
+    <button type="button"
+          class="btn btn-sm btn-danger mt-2"
+          phx-click="remove"
+          phx-value-index={index}
+          phx-target={@myself}>Remove</button>
+
+    <div class="row">
       <.live_component
         module={EctoLiveWeb.Components.Fields.Smart}
         schema={@schema}
@@ -8,13 +19,8 @@
         type={type_for(value)}
         name={"#{@name}[]"}
         id={"#{@name}#{index}"} />
-
-      <button type="button"
-          class="btn btn-sm btn-danger mt-2"
-          phx-click="remove"
-          phx-value-index={index}
-          phx-target={@myself}>Remove</button>
     </div>
+    <% end %>
   <% end %>
 
   <hr class="mt-4">

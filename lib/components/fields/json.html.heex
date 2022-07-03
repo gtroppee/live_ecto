@@ -1,26 +1,31 @@
 <div class="p-3 border rounded">
-
-<%= for {key, value} <- @value do %>
-  <div class="row">
-    <.live_component
-      module={EctoLiveWeb.Components.Fields.Smart}
-      schema={@schema}
-      value={value}
-      type={type_for(value)}
-      name={"#{@name}[#{key}]"}
-      id={"#{@name}[#{key}]"} />
-    
-    <%= if @display_actions do %>
-    <button type="button"
-      class="btn btn-sm btn-danger mt-2"
-      phx-click="remove"
-      phx-value-name={key}
-      phx-target={@myself}>Remove</button>
-    <% end %>
+  <%= if @value == %{} do %>
+  <div class="alert alert-info text-center" role="alert">
+    No data
   </div>
-<% end %>
+  <% else %>
+    <%= for {key, value} <- @value do %>
+      <%= if @display_actions do %>
+      <button type="button"
+        class="btn btn-sm btn-danger mt-2"
+        phx-click="remove"
+        phx-value-name={key}
+        phx-target={@myself}>Remove</button>
+      <% end %>
 
-<%= if @display_actions do %>
+      <div class="row">
+        <.live_component
+          module={EctoLiveWeb.Components.Fields.Smart}
+          schema={@schema}
+          value={value}
+          type={type_for(value)}
+          name={"#{@name}[#{key}]"}
+          id={"#{@name}[#{key}]"} />
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= if @display_actions do %>
 
   <hr class="mt-4">
 
@@ -37,6 +42,6 @@
     </div>
   </div>
 
-<% end %>
+  <% end %>
 
 </div>

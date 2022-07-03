@@ -16,6 +16,13 @@
         value={@value}
         id={"#{@name}-#{:rand.uniform(10000)}"}
         name={@name} />
+    <% :boolean -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Boolean}
+        schema={@schema}
+        value={@value}
+        id={"#{@name}-#{:rand.uniform(10000)}"}
+        name={@name} />
     <% :integer -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.Integer}
@@ -50,33 +57,5 @@
       <div class="alert alert-danger" role="alert">
         Unsupported type <%= inspect @type %> for field <%= @name %>
       </div>
-  <% end %>
-
-  <%= if false do %>
-  <%= cond do %>
-<% is_struct(@value) -> %>
-      <.live_component
-        module={EctoLiveWeb.Components.Fields.Json}
-        id={"#{@name}-#{:rand.uniform(10000)}"}
-        name={@name}
-        value={@value |> Map.from_struct |> Map.delete(:__meta__)}
-        display_actions={false} />
-    <% is_map(@value) -> %>
-      <.live_component
-        module={EctoLiveWeb.Components.Fields.Json}
-        id={"#{@name}-#{:rand.uniform(10000)}"}
-        name={@name}
-        schema={@schema}
-        value={@value}
-        display_actions={true} />
-    <% is_list(@value) -> %>
-      <.live_component
-        module={EctoLiveWeb.Components.Fields.Array}
-        schema={@schema}
-        value={@value}
-        id={"#{@name}-#{:rand.uniform(10000)}"}
-        name={@name} />
-    <% true -> %>
-      <% end %>
   <% end %>
 </div>

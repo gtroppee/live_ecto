@@ -3,30 +3,6 @@ defmodule EctoLive.Helpers do
     Application.get_env(:live_ecto, :repo)
   end
 
-  def all(queryable, opts \\ []) do
-    repo().all(queryable, opts)
-  end
-
-  # def search(queryable, %{"term" => term}) do
-  #   from(u in queryable, where: like(u.name, ^"%#{term}%")) |> repo().all
-  # end
-
-  def get(queryable, id, opts \\ []) do
-    repo().get(queryable, id, opts)
-  end
-
-  def new(queryable) do
-    queryable.__struct__
-  end
-
-  def get_or_new(queryable, nil) do
-    new(queryable)
-  end
-
-  def get_or_new(queryable, id) do
-    get(queryable, id)
-  end
-
   def declare_fkey_constraints(schema, changeset) do
     child_associations(schema)
     |> Enum.map(fn a -> a.field end)

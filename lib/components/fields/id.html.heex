@@ -5,7 +5,7 @@
   <select class="form-select" name={@name}>
     <option></option>
     <%= for resource <- @association.queryable |> Helpers.repo().all do %>
-    <option value={resource.id} selected={resource.id == @value}><%= resource.name %></option>
+    <option value={resource.id} selected={"#{resource.id}" == "#{@value}"}><%= resource.name %></option>
     <% end %>
   </select>
   <% end %>

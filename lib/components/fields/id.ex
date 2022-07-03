@@ -4,7 +4,8 @@ defmodule EctoLiveWeb.Components.Fields.Id do
 
   @impl true
   def update(%{name: name, schema: schema} = assigns, socket) do
-    socket = assign(socket,
+    socket = assign(
+      socket,
       Map.merge(assigns, %{association: association_for(name, schema)})
     )
     {:ok, socket}

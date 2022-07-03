@@ -7,7 +7,7 @@ defmodule EctoLiveWeb.List do
     {:ok, socket} = super(assigns, socket)
 
     socket = assign(socket,
-      resources: Helpers.all(schema)
+      resources: Helpers.repo().all(schema)
     )
 
     {:ok, socket}
