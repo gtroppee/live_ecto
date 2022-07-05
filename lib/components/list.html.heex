@@ -1,21 +1,35 @@
 <div>
   <h3><%= @schema %></h3>
 
-  <form class="row row-cols-lg-auto g-3 align-items-center alert alert-secondary mt-3 p-4" phx-submit="filter" phx-target={@myself}>
-    <%= for association <- @parent_associations do %>
-    <div class="col-12 m-0">
-      <select class="form-select" id="inlineFormSelectPref" name={association.owner_key}>
-        <option value="">-- Choose <%= association.field %> --</option>
-        <%= for resource <- association.queryable |> Helpers.repo().all do %>
-        <option value={resource.id} selected={Keyword.get(@filters, association.owner_key) == "#{resource.id}"}><%= resource.name %></option>
-        <% end %>
-      </select>
+  <form class="g-3 align-items-center alert alert-secondary mt-3 p-4" phx-submit="filter" phx-target={@myself}>
+    <h6>Parents</h6>
+    <div class="row row-cols-lg-auto">
+      <%= for association <- @parent_associations do %>
+      <div class="col-12 m-0">
+        <select class="form-select" id="inlineFormSelectPref" name={association.owner_key}>
+          <option value="">-- <%= Inflex.camelize(association.field) %> --</option>
+          <%= for resource <- association.queryable |> Helpers.repo().all do %>
+          <option value={resource.id} selected={Keyword.get(@filters, association.owner_key) == "#{resource.id}"}><%= resource.name %></option>
+          <% end %>
+        </select>
+      </div>
+      <% end %>
     </div>
-    <% end %>
 
-    <div class="col-12 m-0">
-      <button type="submit" class="btn btn-primary">Filter</button>
-      <button type="button" class="btn btn-danger" phx-click="clear-filters" phx-target={@myself}>Clear filters</button>
+    <hr>
+
+    <h6>String attributes</h6>
+    <div class="row row-cols-lg-auto">
+      <%= for {name, _} <- Enum.filter(@attributes, fn {_, type} -> type == :string end) do %>
+      <div class="col-12 m-0">
+        <input class="form-control" type="text" name={name} placeholder={name} value={Keyword.get(@filters, name)}>
+      </div>
+      <% end %>
+
+      <div class="col-12 m-0">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        <button type="button" class="btn btn-danger" phx-click="clear-filters" phx-target={@myself}>Clear filters</button>
+      </div>
     </div>
   </form>
 
@@ -43,14 +57,42 @@
         </td>
         <% end %>
         <td>
-          <%= for {name, _} <- @actions do %>
-          <a href="#" class="btn btn-sm btn-primary" phx-click="action" phx-value-name={name} phx-value-id={resource.id} phx-target={@myself} data-confirm={"This resource is going to be #{name}-ed. Are you sure?"}><%= name |> Inflex.camelize %></a><br>
-          <% end %>
+          <div class="btn-group">
+            <button id={"dropdown-actions-button-#{resource.id}"}
+                    class="btn btn-primary btn-sm dropdown-toggle"
+                    type="button"
+                    phx-click={show_dropdown(:actions, resource.id)}
+                    phx-click-away={hide_dropdown(:actions, resource.id)}>
+              Actions
+            </button>
+            <ul id={"dropdown-actions-#{resource.id}"} class="dropdown-menu">
+              <%= for {name, _} <- @actions do %>
+              <li><a href="#"
+                     class="dropdown-item"
+                     phx-click="action"
+                     phx-value-name={name}
+                     phx-value-id={resource.id}
+                     phx-target={@myself}
+                     data-confirm={"This resource is going to be #{name}-ed. Are you sure?"}><%= Inflex.camelize(name) %></a></li>
+              <% end %>
+            </ul>
+          </div>
         </td>
         <td>
-          <%= for {_, function} <- @links do %>
-          <%= live_redirect("Edit", to: function.(resource)) %><br>
-          <% end %>
+          <div class="btn-group">
+            <button id={"dropdown-links-button-#{resource.id}"}
+                    class="btn btn-primary btn-sm dropdown-toggle"
+                    type="button"
+                    phx-click={show_dropdown(:links, resource.id)}
+                    phx-click-away={hide_dropdown(:links, resource.id)}>
+              Links
+            </button>
+            <ul id={"dropdown-links-#{resource.id}"} class="dropdown-menu">
+              <%= for {name, function} <- @links do %>
+              <li><%= live_redirect(Inflex.camelize(name), to: function.(resource), class: "dropdown-item") %></li>
+              <% end %>
+            </ul>
+          </div>
         </td>
       </tr>
       <% end %>

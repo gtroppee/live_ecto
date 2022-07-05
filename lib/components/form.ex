@@ -6,6 +6,7 @@ defmodule EctoLiveWeb.Form do
     {:ok, socket} = super(assigns, socket)
 
     socket = assign(socket,
+      attributes: Helpers.attributes(schema),
       resource: resource,
       changeset: schema.changeset(resource, %{})
     )

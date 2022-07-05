@@ -1,6 +1,7 @@
 defmodule EctoLiveWeb.List do
   use EctoLiveWeb.Base
   alias EctoLive.Helpers
+  alias Phoenix.LiveView.JS
   import Ecto.Query, only: [where: 2]
 
   @impl true
@@ -10,6 +11,7 @@ defmodule EctoLiveWeb.List do
     default_filters = []
 
     socket = assign(socket,
+      attributes: Helpers.attributes_without_fkeys(schema),
       resources: resources_for_filters(schema, default_filters),
       parent_associations: Helpers.parent_associations(schema),
       filters: default_filters
@@ -40,7 +42,7 @@ defmodule EctoLiveWeb.List do
   def handle_event("filter", params, %{assigns: %{schema: schema}} = socket) do
     params =
       params
-      |> Map.Helpers.atomize_keys
+      |> Map.new(fn {key, value} -> {String.to_atom(key), value} end)
       |> Enum.filter(fn {_, value} -> value != "" end)
 
     socket = assign(socket, resources: resources_for_filters(schema, params), filters: params)
@@ -53,5 +55,15 @@ defmodule EctoLiveWeb.List do
     socket = assign(socket, resources: resources_for_filters(schema, []), filters: [])
 
     {:noreply, socket}
+  end
+
+  def show_dropdown(type, resource_id, js \\ %JS{}) do
+    js
+    |> JS.add_class("show", to: "#dropdown-#{type}-#{resource_id}")
+  end
+
+  def hide_dropdown(type, resource_id, js \\ %JS{}) do
+    js
+    |> JS.remove_class("show", to: "#dropdown-#{type}-#{resource_id}")
   end
 end
