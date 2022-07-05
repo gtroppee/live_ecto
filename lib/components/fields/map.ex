@@ -1,4 +1,4 @@
-defmodule EctoLiveWeb.Components.Fields.Json do
+defmodule EctoLiveWeb.Components.Fields.Map do
   use Phoenix.LiveComponent
 
   @impl true

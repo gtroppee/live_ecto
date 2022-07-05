@@ -8,7 +8,7 @@ defmodule EctoLiveWeb.Base do
       def update(%{schema: schema} = assigns, socket) do
         socket = assign(socket,
           schema: schema,
-          attributes: Helpers.attributes(schema),
+          attributes: Helpers.attributes_without_fkeys(schema),
           actions: Map.get(assigns, :actions, []),
           action: Map.get(assigns, :action, []),
           links: Map.get(assigns, :links, [])

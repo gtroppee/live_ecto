@@ -1,6 +1,24 @@
 <div>
   <h3><%= @schema %></h3>
 
+  <form class="row row-cols-lg-auto g-3 align-items-center alert alert-secondary mt-3 p-4" phx-submit="filter" phx-target={@myself}>
+    <%= for association <- @parent_associations do %>
+    <div class="col-12 m-0">
+      <select class="form-select" id="inlineFormSelectPref" name={association.owner_key}>
+        <option value="">-- Choose <%= association.field %> --</option>
+        <%= for resource <- association.queryable |> Helpers.repo().all do %>
+        <option value={resource.id} selected={Keyword.get(@filters, association.owner_key) == "#{resource.id}"}><%= resource.name %></option>
+        <% end %>
+      </select>
+    </div>
+    <% end %>
+
+    <div class="col-12 m-0">
+      <button type="submit" class="btn btn-primary">Filter</button>
+      <button type="button" class="btn btn-danger" phx-click="clear-filters" phx-target={@myself}>Clear filters</button>
+    </div>
+  </form>
+
   <table class="table">
     <thead>
       <tr>

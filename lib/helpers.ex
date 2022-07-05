@@ -38,6 +38,10 @@ defmodule EctoLive.Helpers do
     end)
   end
 
+  def attributes_without_fkeys(module) do
+    module |> attributes |> Enum.reject(fn {_, type} -> type == :id end)
+  end
+
   def attributes(module) do
     module |> fields |> Enum.reject(fn {name, _} -> name == :id end)
   end

@@ -16,6 +16,13 @@
         value={@value}
         id={"#{@name}-#{:rand.uniform(10000)}"}
         name={@name} />
+    <% :binary_id -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.String}
+        schema={@schema}
+        value={@value}
+        id={"#{@name}-#{:rand.uniform(10000)}"}
+        name={@name} />
     <% :boolean -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.Boolean}
@@ -32,7 +39,7 @@
         name={@name} />
     <% :map -> %>
       <.live_component
-        module={EctoLiveWeb.Components.Fields.Json}
+        module={EctoLiveWeb.Components.Fields.Map}
         schema={@schema}
         id={"#{@name}-#{:rand.uniform(10000)}"}
         name={@name}
