@@ -3,6 +3,10 @@ defmodule EctoLive.Helpers do
     Application.get_env(:live_ecto, :repo)
   end
 
+  def routes do
+    Application.get_env(:live_ecto, :routes)
+  end
+
   def declare_fkey_constraints(schema, changeset) do
     child_associations(schema)
     |> Enum.map(fn a -> a.field end)

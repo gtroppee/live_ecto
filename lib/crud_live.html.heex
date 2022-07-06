@@ -1,0 +1,107 @@
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/">APP</a>
+  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+</header>
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="position-sticky pt-3">
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+          <span>Resources</span>
+          <a class="link-secondary" href="#" aria-label="Add a new report">
+            <span data-feather="plus-circle" class="align-text-bottom"></span>
+          </a>
+        </h6>
+        <ul class="nav flex-column mb-2">
+          <%= for {name, _} <- module_map() do %>
+          <li class="nav-item">
+            <%= live_redirect Inflex.camelize(name), to: Helpers.routes().crud_path(@socket, :index, name), class: "nav-link" %>
+          </li>
+          <% end %>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-3">
+      <p  class="alert alert-info" role="alert"
+          phx-click="lv:clear-flash"
+          phx-value-key="info"><%= live_flash(@flash, :info) %></p>
+
+      <p  class="alert alert-danger" role="alert"
+          phx-click="lv:clear-flash"
+          phx-value-key="error"><%= live_flash(@flash, :error) %></p>
+
+      <%= if @loading do %>
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <% else %>
+        <%= case @live_action do %>
+          <% :index -> %>
+          <.live_component
+            id={@live_action}
+            module={EctoLiveWeb.List}
+            schema={@schema}
+            actions={[
+              {
+                :delete,
+                fn (resource) ->
+                  Helpers.repo().delete(resource)
+                end
+              }
+            ]}
+            links={[
+              {
+                :edit,
+                fn (resource) ->
+                  Helpers.routes().crud_path(@socket, :edit, @resource_name, resource.id)
+                end
+              }
+            ] ++ Enum.map(Helpers.child_associations(@schema), fn association ->
+                {
+                  :"new_#{association.field |> Inflex.singularize}",
+                  fn (resource) ->
+                    Helpers.routes().crud_path(@socket, :new, association.field, %{association.related_key => resource.id})
+                  end
+                }
+              end)} />
+
+            <%= live_redirect "New", to: Helpers.routes().crud_path(@socket, :new, @resource_name), class: "btn btn-primary" %>
+          <% :new -> %>
+          <.live_component
+            id={@live_action}
+            module={EctoLiveWeb.Form}
+            schema={@schema}
+            resource={@resource}
+            action={
+              {
+                :insert,
+                fn (changeset) ->
+                  Helpers.repo().insert(changeset)
+                end
+              }
+            } />
+          <% :edit -> %>
+          <.live_component
+            id={@live_action}
+            module={EctoLiveWeb.Form}
+            schema={@schema}
+            resource={@resource}
+            action={
+              {
+                :update,
+                fn (changeset) ->
+                  Helpers.repo().update(changeset)
+                end
+              }
+            } />
+        <% end %>
+      <% end %>
+    </main>
+  </div>
+</div>
