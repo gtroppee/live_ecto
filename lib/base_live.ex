@@ -59,7 +59,7 @@ defmodule EctoLiveWeb.BaseLive do
         socket =
           socket
           |> put_flash(:info, "Resource successfully #{name}-ed!")
-          |> push_redirect(to: Routes.crud_path(socket, :index, socket.assigns.resource_name))
+          |> push_redirect(to: Helpers.routes().crud_path(socket, :index, socket.assigns.resource_name))
 
         {:noreply, socket}
       end

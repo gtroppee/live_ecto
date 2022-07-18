@@ -15,7 +15,8 @@ defmodule EctoLiveWeb.Form do
   end
 
   @impl true
-  def handle_event("action", params, %{assigns: %{action: action, resource: resource, schema: schema}} = socket) do
+  def handle_event("action", params, %{assigns: %{actions: actions, resource: resource, schema: schema}} = socket) do
+    [action | _] = actions
     params = params |> Map.get(schema.__schema__(:source) |> Inflex.singularize)
     changeset = schema.changeset(resource, params)
     socket = run_action(action, changeset, socket)

@@ -43,63 +43,31 @@
       <% else %>
         <%= case @live_action do %>
           <% :index -> %>
+
           <.live_component
             id={@live_action}
             module={EctoLiveWeb.List}
             schema={@schema}
-            actions={[
-              {
-                :delete,
-                fn (resource) ->
-                  Helpers.repo().delete(resource)
-                end
-              }
-            ]}
-            links={[
-              {
-                :edit,
-                fn (resource) ->
-                  Helpers.routes().crud_path(@socket, :edit, @resource_name, resource.id)
-                end
-              }
-            ] ++ Enum.map(Helpers.child_associations(@schema), fn association ->
-                {
-                  :"new_#{association.field |> Inflex.singularize}",
-                  fn (resource) ->
-                    Helpers.routes().crud_path(@socket, :new, association.field, %{association.related_key => resource.id})
-                  end
-                }
-              end)} />
+            actions={actions(:index)}
+            links={links(assigns)} />
 
             <%= live_redirect "New", to: Helpers.routes().crud_path(@socket, :new, @resource_name), class: "btn btn-primary" %>
           <% :new -> %>
+
           <.live_component
             id={@live_action}
             module={EctoLiveWeb.Form}
             schema={@schema}
             resource={@resource}
-            action={
-              {
-                :insert,
-                fn (changeset) ->
-                  Helpers.repo().insert(changeset)
-                end
-              }
-            } />
+            actions={actions(:new)} />
           <% :edit -> %>
+
           <.live_component
             id={@live_action}
             module={EctoLiveWeb.Form}
             schema={@schema}
             resource={@resource}
-            action={
-              {
-                :update,
-                fn (changeset) ->
-                  Helpers.repo().update(changeset)
-                end
-              }
-            } />
+            actions={actions(:edit)} />
         <% end %>
       <% end %>
     </main>
