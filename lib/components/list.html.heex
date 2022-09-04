@@ -9,7 +9,7 @@
         <select class="form-select" id="inlineFormSelectPref" name={association.owner_key}>
           <option value="">-- <%= Inflex.camelize(association.field) %> --</option>
           <%= for resource <- association.queryable |> Helpers.repo().all do %>
-          <option value={resource.id} selected={Keyword.get(@filters, association.owner_key) == "#{resource.id}"}><%= resource.name %></option>
+          <option value={Helpers.resource_id(resource)} selected={Keyword.get(@filters, association.owner_key) == "#{Helpers.resource_id(resource)}"}><%= resource.name %></option>
           <% end %>
         </select>
       </div>
@@ -50,7 +50,7 @@
         <td style="word-wrap:break-word;max-width:200px">
           <% value = Map.get(resource, attribute) %>
           <%= if (is_map(value) || is_list(value)) do %>
-          <code><.live_component module={EctoLiveWeb.Helpers.Json} value={value} id={"#{resource.id}_#{attribute}"} /></code>
+          <code><.live_component module={EctoLiveWeb.Helpers.Json} value={value} id={"#{Helpers.resource_id(resource)}_#{attribute}"} /></code>
           <% else %>
           <pre><%= value %></pre>
           <% end %>
@@ -58,20 +58,20 @@
         <% end %>
         <td>
           <div class="btn-group">
-            <button id={"dropdown-actions-button-#{resource.id}"}
+            <button id={"dropdown-actions-button-#{Helpers.resource_id(resource)}"}
                     class="btn btn-primary btn-sm dropdown-toggle"
                     type="button"
-                    phx-click={show_dropdown(:actions, resource.id)}
-                    phx-click-away={hide_dropdown(:actions, resource.id)}>
+                    phx-click={show_dropdown(:actions, Helpers.resource_id(resource))}
+                    phx-click-away={hide_dropdown(:actions, Helpers.resource_id(resource))}>
               Actions
             </button>
-            <ul id={"dropdown-actions-#{resource.id}"} class="dropdown-menu">
+            <ul id={"dropdown-actions-#{Helpers.resource_id(resource)}"} class="dropdown-menu">
               <%= for {name, _} <- @actions do %>
               <li><a href="#"
                      class="dropdown-item"
                      phx-click="action"
                      phx-value-name={name}
-                     phx-value-id={resource.id}
+                     phx-value-id={Helpers.resource_id(resource)}
                      phx-target={@myself}
                      data-confirm={"This resource is going to be #{name}-ed. Are you sure?"}><%= Inflex.camelize(name) %></a></li>
               <% end %>
@@ -80,16 +80,20 @@
         </td>
         <td>
           <div class="btn-group">
-            <button id={"dropdown-links-button-#{resource.id}"}
+            <button id={"dropdown-links-button-#{Helpers.resource_id(resource)}"}
                     class="btn btn-primary btn-sm dropdown-toggle"
                     type="button"
-                    phx-click={show_dropdown(:links, resource.id)}
-                    phx-click-away={hide_dropdown(:links, resource.id)}>
+                    phx-click={show_dropdown(:links, Helpers.resource_id(resource))}
+                    phx-click-away={hide_dropdown(:links, Helpers.resource_id(resource))}>
               Links
             </button>
-            <ul id={"dropdown-links-#{resource.id}"} class="dropdown-menu">
-              <%= for {name, function} <- @links do %>
-              <li><%= live_redirect(Inflex.camelize(name), to: function.(resource), class: "dropdown-item") %></li>
+            <ul id={"dropdown-links-#{Helpers.resource_id(resource)}"} class="dropdown-menu">
+              <%= for {name, function} <- @internal_links do %>
+              <li><%= live_redirect(Inflex.camelize(name), to: function.(@socket, resource), class: "dropdown-item") %></li>
+              <% end %>
+
+              <%= for {name, function} <- @external_links do %>
+              <li><a href={function.(@socket, resource)} class="dropdown-item"  target="_blank"><%= Inflex.camelize(name) %></a></li>
               <% end %>
             </ul>
           </div>

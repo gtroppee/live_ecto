@@ -5,13 +5,30 @@
     <div class="row">
       <div class="col p-4">
         <%= for {name, type} <- @attributes do %>
-        <.live_component
-            module={EctoLiveWeb.Components.Fields.Smart}
-            schema={@schema}
-            type={type}
-            value={Ecto.Changeset.get_field(@changeset, name)}
-            name={"#{@schema.__schema__(:source) |> Inflex.singularize}[#{name}]"}
-            id={name} />
+          <% label = "#{@schema.__schema__(:source) |> Inflex.singularize}[#{name}]" %>
+
+          <%= case Map.get(Ecto.Changeset.traverse_validations(@changeset, &(&1)), name) do %>
+            <% [inclusion: choices] -> %>
+              <div class="mb-3">
+                <label class="form-label" for={name}><b><%= label %></b></label>
+
+                <select class="form-select" name={label}>
+                  <option></option>
+                  <%= for choice <- choices do %>
+                  <option value={choice} selected={Ecto.Changeset.get_field(@changeset, name) == choice}><%= choice %></option>
+                  <% end %>
+                </select>
+              </div>
+
+            <% _ -> %>
+              <.live_component
+                module={EctoLiveWeb.Components.Fields.Smart}
+                schema={@schema}
+                type={type}
+                value={Ecto.Changeset.get_field(@changeset, name)}
+                name={label}
+                id={Ecto.UUID.generate} />
+          <% end %>
         <% end %>
       </div>
     </div>

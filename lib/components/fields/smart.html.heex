@@ -7,49 +7,58 @@
         module={EctoLiveWeb.Components.Fields.Id}
         schema={@schema}
         value={@value}
-        id={"#{@name}-#{:rand.uniform(10000)}"}
+        id={Ecto.UUID.generate}
         name={@name} />
     <% :string -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.String}
         schema={@schema}
         value={@value}
-        id={"#{@name}-#{:rand.uniform(10000)}"}
+        id={Ecto.UUID.generate}
         name={@name} />
     <% :binary_id -> %>
       <.live_component
-        module={EctoLiveWeb.Components.Fields.String}
+        module={EctoLiveWeb.Components.Fields.Id}
         schema={@schema}
         value={@value}
-        id={"#{@name}-#{:rand.uniform(10000)}"}
+        id={Ecto.UUID.generate}
         name={@name} />
     <% :boolean -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.Boolean}
         schema={@schema}
         value={@value}
-        id={"#{@name}-#{:rand.uniform(10000)}"}
+        id={Ecto.UUID.generate}
         name={@name} />
     <% :integer -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.Integer}
         schema={@schema}
         value={@value}
-        id={"#{@name}-#{:rand.uniform(10000)}"}
+        id={Ecto.UUID.generate}
         name={@name} />
+    <% :struct -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Struct}
+        schema={@schema}
+        id={Ecto.UUID.generate}
+        name={@name}
+        value={@value || %{}}
+        display_actions={true} />
     <% :map -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.Map}
         schema={@schema}
-        id={"#{@name}-#{:rand.uniform(10000)}"}
+        id={Ecto.UUID.generate}
         name={@name}
         value={@value || %{}}
         display_actions={true} />
-    <% {:array, _} -> %>
+    <% {:array, type} -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.Array}
         schema={@schema}
-        id={"#{@name}-#{:rand.uniform(10000)}"}
+        type={type}
+        id={Ecto.UUID.generate}
         name={@name}
         value={@value || []} />
     <% {:parameterized, Ecto.Embedded, %Ecto.Embedded{cardinality: :one}} -> %>
@@ -58,8 +67,16 @@
         schema={@schema}
         type={@type}
         value={@value || %{}}
-        id={"#{@name}-#{:rand.uniform(10000)}"}
+        id={Ecto.UUID.generate}
         name={@name} />
+    <% {:parameterized, Ecto.Embedded, %Ecto.Embedded{cardinality: :many}} -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Embedded.Many}
+        schema={@schema}
+        type={@type}
+        id={Ecto.UUID.generate}
+        name={@name}
+        value={@value || []} />
     <% _ -> %>
       <div class="alert alert-danger" role="alert">
         Unsupported type <%= inspect @type %> for field <%= @name %>

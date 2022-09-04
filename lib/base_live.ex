@@ -64,20 +64,8 @@ defmodule EctoLiveWeb.BaseLive do
         {:noreply, socket}
       end
 
-      def module_map do
-        %{
-          "projects" => Narraflow.Admin.Project,
-          "scenes" => Narraflow.Admin.Scene,
-          "nodes" => Narraflow.Admin.Node,
-          "links" => Narraflow.Admin.Link,
-          "sourced_links" => Narraflow.Admin.Link,
-          "targeted_links" => Narraflow.Admin.Link,
-          "save_files" => Narraflow.Admin.SaveFile
-        }
-      end
-
       def resource_module(resource_name) do
-        module_map()[resource_name]
+        Helpers.schemas()[resource_name]
       end
     end
   end

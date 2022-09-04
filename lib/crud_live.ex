@@ -10,18 +10,27 @@ defmodule EctoLiveWeb.CRUDLive do
   end
 
   def actions(:edit) do
-    [{:update, fn (changeset) -> Helpers.repo().update(changeset) end}]
+    [{
+      :update,
+      fn (changeset) ->
+        Helpers.repo().update(changeset)
+      end
+    }]
   end
 
-  def links(assigns) do
+  def internal_links(%{resource_name: resource_name, socket: socket} = assigns) do
     [edit_link(assigns) | new_child_links(assigns)]
+  end
+
+  def external_links(%{resource_name: resource_name, socket: socket} = assigns) do
+    Helpers.links()[resource_name] || []
   end
 
   defp edit_link(%{resource_name: resource_name, socket: socket}) do
     {
       :edit,
-      fn (resource) ->
-        Helpers.routes().crud_path(socket, :edit, resource_name, resource.id)
+      fn (socket, resource) ->
+        Helpers.routes().crud_path(socket, :edit, resource_name, Helpers.resource_id(resource))
       end
     }
   end
@@ -30,8 +39,8 @@ defmodule EctoLiveWeb.CRUDLive do
     Enum.map(Helpers.child_associations(schema), fn association ->
       {
         :"new_#{association.field |> Inflex.singularize}",
-        fn (resource) ->
-          Helpers.routes().crud_path(socket, :new, association.field, %{association.related_key => resource.id})
+        fn (socket, resource) ->
+          Helpers.routes().crud_path(socket, :new, association.field, %{association.related_key => Helpers.resource_id(resource)})
         end
       }
     end)

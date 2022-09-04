@@ -1,11 +1,12 @@
 <div>
   <%= if is_nil(@association) do %>
-  <input class="form-control" id={@name} name={@name} type="number" value={@value} />
+  <input class="form-control" id={Ecto.UUID.generate} name={@name} value={@value} />
   <% else %>
   <select class="form-select" name={@name}>
     <option></option>
     <%= for resource <- @association.queryable |> Helpers.repo().all do %>
-    <option value={resource.id} selected={"#{resource.id}" == "#{@value}"}><%= resource.name %></option>
+    <% resource = struct(@association.queryable, resource |> Jason.encode! |> Jason.decode! |> Helpers.atomize_keys) %>
+    <option value={Helpers.resource_id(resource)} selected={"#{Helpers.resource_id(resource)}" == "#{@value}"}><%= to_string(resource) %></option>
     <% end %>
   </select>
   <% end %>

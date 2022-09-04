@@ -33,20 +33,26 @@ defmodule EctoLiveWeb.Components.Fields.Array do
   end
 
   @impl true
-  def handle_event("remove", %{"index" => index}, %{assigns: %{value: value}} = socket) do
-    socket = assign(socket, value: List.delete_at(value, String.to_integer(index)))
+  def handle_event("add", _, %{assigns: %{type: :string, value: value}} = socket) do
+    socket = assign(socket, value: List.insert_at(value, -1, ""))
     {:noreply, socket}
   end
 
-  def type_for(value) when is_map(value) do
-    :map
+  @impl true
+  def handle_event("add", _, %{assigns: %{type: :integer, value: value}} = socket) do
+    socket = assign(socket, value: List.insert_at(value, -1, 0))
+    {:noreply, socket}
   end
 
-  def type_for(value) when is_list(value) do
-    {:array, :string}
+  @impl true
+  def handle_event("add", _, %{assigns: %{type: type, value: value}} = socket) do
+    socket = assign(socket, value: List.insert_at(value, -1, type.__struct__))
+    {:noreply, socket}
   end
 
-  def type_for(value) do
-    :string
+  @impl true
+  def handle_event("remove", %{"index" => index}, %{assigns: %{value: value}} = socket) do
+    socket = assign(socket, value: List.delete_at(value, String.to_integer(index)))
+    {:noreply, socket}
   end
 end

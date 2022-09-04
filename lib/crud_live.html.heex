@@ -16,7 +16,7 @@
           </a>
         </h6>
         <ul class="nav flex-column mb-2">
-          <%= for {name, _} <- module_map() do %>
+          <%= for {name, _} <- Helpers.schemas() do %>
           <li class="nav-item">
             <%= live_redirect Inflex.camelize(name), to: Helpers.routes().crud_path(@socket, :index, name), class: "nav-link" %>
           </li>
@@ -45,17 +45,18 @@
           <% :index -> %>
 
           <.live_component
-            id={@live_action}
+            id={Ecto.UUID.generate}
             module={EctoLiveWeb.List}
             schema={@schema}
             actions={actions(:index)}
-            links={links(assigns)} />
+            internal_links={internal_links(assigns)}
+            external_links={external_links(assigns)} />
 
             <%= live_redirect "New", to: Helpers.routes().crud_path(@socket, :new, @resource_name), class: "btn btn-primary" %>
           <% :new -> %>
 
           <.live_component
-            id={@live_action}
+            id={Ecto.UUID.generate}
             module={EctoLiveWeb.Form}
             schema={@schema}
             resource={@resource}
@@ -63,7 +64,7 @@
           <% :edit -> %>
 
           <.live_component
-            id={@live_action}
+            id={Ecto.UUID.generate}
             module={EctoLiveWeb.Form}
             schema={@schema}
             resource={@resource}

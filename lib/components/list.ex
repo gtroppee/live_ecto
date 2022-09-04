@@ -29,7 +29,7 @@ defmodule EctoLiveWeb.List do
   @impl true
   def handle_event("action", %{"name" => name, "id" => id}, %{assigns: %{schema: schema, actions: actions, resources: resources}} = socket) do
     action = Enum.find(actions, fn {n, _} -> Atom.to_string(n) == name end)
-    resource = Enum.find(resources, fn r -> r.id == String.to_integer(id) end)
+    resource = Enum.find(resources, fn r -> "#{Helpers.resource_id(r)}" == "#{id}" end)
     changeset = schema.changeset(resource, %{})
     changeset = Helpers.declare_fkey_constraints(schema, changeset)
 

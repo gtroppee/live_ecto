@@ -10,7 +10,8 @@ defmodule EctoLiveWeb.Base do
           schema: schema,
           actions: Map.get(assigns, :actions, []),
           action: Map.get(assigns, :action, []),
-          links: Map.get(assigns, :links, [])
+          internal_links: Map.get(assigns, :internal_links, []),
+          external_links: Map.get(assigns, :external_links, [])
         )
 
         {:ok, socket}
@@ -18,6 +19,10 @@ defmodule EctoLiveWeb.Base do
 
       defp run_action({name, function}, changeset, socket) do
         case function.(changeset) do
+          :ok ->
+            send(self(), {:ok, {:action, name, nil}})
+            socket
+
           {:ok, data} ->
             send(self(), {:ok, {:action, name, data}})
             socket

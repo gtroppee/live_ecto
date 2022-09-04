@@ -16,25 +16,33 @@
         module={EctoLiveWeb.Components.Fields.Smart}
         schema={@schema}
         value={value}
-        type={type_for(value)}
+        type={if is_struct(value), do: :struct, else: @type}
         name={"#{@name}[]"}
-        id={"#{@name}#{index}"} />
+        id={Ecto.UUID.generate} />
     </div>
     <% end %>
   <% end %>
 
   <hr class="mt-4">
 
-  <div class="row align-items-end mt-3">
-    <div class="col">
-      <label class="form-label" for="attribute">New attribute name</label>
-      <input phx-change="set-name" name={"name-#{:rand.uniform(10000)}"} phx-target={@myself} class="form-control"/>
-    </div>
+  <%= case @type do %>
+    <% :map -> %>
+      <div class="col">
+        <label class="form-label" for="attribute">New attribute name</label>
+        <input phx-change="set-name" name={"name-#{Ecto.UUID.generate}"} phx-target={@myself} class="form-control"/>
+      </div>
 
-    <div class="btn-group">
-      <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add-as-string" phx-target={@myself}>Add as string</button>
-      <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add-as-list" phx-target={@myself}>Add as list</button>
-      <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add-as-object" phx-target={@myself}>Add as object</button>
-    </div>
+      <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add-as-string" phx-target={@myself}>Add as string</button>
+        <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add-as-list" phx-target={@myself}>Add as list</button>
+        <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add-as-object" phx-target={@myself}>Add as object</button>
+      </div>
+    <% _ -> %>
+      <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-primary mt-2" phx-click="add" phx-target={@myself}>Add</button>
+      </div>
+  <% end %>
+  <div class="row align-items-end mt-3">
+    
   </div>
 </div>

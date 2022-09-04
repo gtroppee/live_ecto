@@ -12,7 +12,7 @@ defmodule EctoLiveWeb.Components.Fields.Id do
   end
 
   def association_for(name, schema) do
-    case String.contains?(name, "[id]") do
+    case String.contains?(name, "[id]") || String.contains?(name, "[uuid]") do
       true ->
         nil
       _ ->
