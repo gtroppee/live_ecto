@@ -37,6 +37,13 @@
         value={@value}
         id={Ecto.UUID.generate}
         name={@name} />
+    <% :float -> %>
+      <.live_component
+        module={EctoLiveWeb.Components.Fields.Float}
+        schema={@schema}
+        value={@value}
+        id={Ecto.UUID.generate}
+        name={@name} />
     <% :struct -> %>
       <.live_component
         module={EctoLiveWeb.Components.Fields.Struct}
