@@ -24,6 +24,13 @@ defmodule EctoLiveWeb.List do
     schema
     |> where(^filters)
     |> Helpers.repo().all
+    |> Enum.sort_by(fn resource ->
+      if Enum.member?(schema.__schema__(:fields), :name) do
+        resource.name
+      else
+        Map.get(resource, Helpers.resource_id(resource))
+      end
+    end)
   end
 
   @impl true
